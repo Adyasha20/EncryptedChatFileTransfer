@@ -56,12 +56,28 @@ EncryptedChatFileTransfer/
 
 1. Make sure Java is installed (Java 8 or above).
 
-2. Go to the `dist` folder of the project.
+2. Open Command Prompt and go to the project folder.
 
-3. Run the JAR file using the command:
+3. Move into the `dist` directory:
 
-```bash
+cd dist
+
+4. Run the JAR file:
+
 java -jar EncryptedChatFileTransfer.jar
+
+5. Choose Sender in one window and Receiver in another.
+
+6. Send files securely over localhost or LAN.
+
+---
+
+Author
+
+Adyasha Priyadarshini  
+B.Tech CSE (Cybersecurity)  
+Siksha 'O' Anusandhan University
+
 
 
 
