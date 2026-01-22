@@ -60,6 +60,7 @@ EncryptedChatFileTransfer/
 
 3. Move into the `dist` directory:
 
+```bash
 cd dist
 
 4. Run the JAR file:
