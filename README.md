@@ -52,3 +52,16 @@ EncryptedChatFileTransfer/
 ├── README.md
 
 
+## How to Run
+
+1. Make sure Java is installed (Java 8 or above).
+
+2. Go to the `dist` folder of the project.
+
+3. Run the JAR file using the command:
+
+```bash
+java -jar EncryptedChatFileTransfer.jar
+
+
+
