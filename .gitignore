@@ -2,9 +2,14 @@
 *.class
 *.jar
 
-# Keys (VERY IMPORTANT)
+# Keys 
 keys/
 *.key
+
+# Runtime generated files
+received*
+decrypted*
+*.enc
 
 # IDE files
 .idea/
