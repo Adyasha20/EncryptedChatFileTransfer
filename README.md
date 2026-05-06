@@ -65,7 +65,9 @@ cd dist
 
 4. Run the JAR file:
 
-java -jar EncryptedChatFileTransfer.jar
+`java -jar EncryptedChatFileTransfer.jar`
+
+**First Run Note:** On the first launch, the application will automatically create a `/keys` directory to securely store your RSA public and private keys. No manual setup is required.
 
 5. Choose Sender in one window and Receiver in another.
 
