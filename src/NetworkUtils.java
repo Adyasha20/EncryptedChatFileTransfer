@@ -49,7 +49,14 @@ public class NetworkUtils {
             out.write(hash);
             statusArea.append("File integrity hash sent.\n");
 
-            //DIGITAL SIGNATURE 
+            // DIGITAL SIGNATURE 
+            // FIX: Ensure key exists before loading
+            File privKeyFile = new File("keys/private.key");
+            if (!privKeyFile.exists()) {
+                statusArea.append("Error: Private key missing. Cannot sign file.\n");
+                return;
+            }
+
             PrivateKey senderPrivateKey = CryptoUtils.loadPrivateKey("keys/private.key");
             byte[] signature = CryptoUtils.signHash(hash, senderPrivateKey);
 
@@ -66,8 +73,10 @@ public class NetworkUtils {
     public static Socket receiveConnection(int port, JTextArea statusArea) {
         try {
             ServerSocket serverSocket = new ServerSocket(port);
+            // Timeout after 60 seconds so the app doesn't hang forever
+            serverSocket.setSoTimeout(60000); 
             Socket socket = serverSocket.accept();
-            statusArea.append("Receiver connected.\n");
+            statusArea.append("Sender connected.\n");
             return socket;
         } catch (Exception e) {
             statusArea.append("Connection failed: " + e.getMessage() + "\n");
@@ -83,6 +92,13 @@ public class NetworkUtils {
             dis.readFully(encryptedKey);
 
             statusArea.append("Encrypted AES key received.\n");
+
+            // FIX: Safety check for receiver keys
+            File privKeyFile = new File("keys/private.key");
+            if (!privKeyFile.exists()) {
+                statusArea.append("Critical Error: keys/private.key not found!\n");
+                return null;
+            }
 
             PrivateKey privateKey = CryptoUtils.loadPrivateKey("keys/private.key");
             byte[] decrypted = CryptoUtils.decryptRSA(encryptedKey, privateKey);
@@ -101,16 +117,12 @@ public class NetworkUtils {
     // ===================== RECEIVE FILE =====================
     public static File receiveFile(DataInputStream dis, JTextArea statusArea) {
         try {
-            // 1️⃣ Read file name
             String fileName = dis.readUTF();
-
-            // 2️⃣ Read file size
             long fileSize = dis.readLong();
 
             File outputFile = new File("received_" + fileName);
             FileOutputStream fos = new FileOutputStream(outputFile);
 
-            // 3️⃣ Read exact file bytes
             byte[] buffer = new byte[4096];
             long remaining = fileSize;
 
@@ -125,7 +137,7 @@ public class NetworkUtils {
             }
 
             fos.close();
-            statusArea.append("File received: " + outputFile.getAbsolutePath() + "\n");
+            statusArea.append("File saved: " + outputFile.getName() + "\n");
             return outputFile;
 
         } catch (Exception e) {
@@ -134,7 +146,6 @@ public class NetworkUtils {
         }
     }
 
-    // ===================== RECEIVE FILE HASH =====================
     public static byte[] receiveFileHash(DataInputStream dis) throws Exception {
         int hashLength = dis.readInt();
         byte[] hash = new byte[hashLength];
@@ -142,7 +153,6 @@ public class NetworkUtils {
         return hash;
     }
 
-    // ===================== RECEIVE DIGITAL SIGNATURE =====================
     public static byte[] receiveSignature(DataInputStream dis) throws Exception {
         int sigLength = dis.readInt();
         byte[] signature = new byte[sigLength];
